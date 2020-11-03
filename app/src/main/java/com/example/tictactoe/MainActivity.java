@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         for(Button b :buttons){
             b.setText("");
         }
+
         // reset turn
         if(currentTurn == playerO){
             swapPlayers();
