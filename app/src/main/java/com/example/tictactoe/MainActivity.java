@@ -141,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // reset player text
-        playerTurn.setText("Player " + currentTurn + "'s Turn");
+        ResetText();
+
     }
 
     // the board has 9 buttons and a player needs three marks in a row, a column, or diagonally
@@ -229,6 +230,10 @@ public class MainActivity extends AppCompatActivity {
         for( Button b: buttons){
             b.setClickable(true);
         }
+    }
+
+    private void ResetText (){
+        playerTurn.setText("Player " + currentTurn + "'s Turn");
     }
 }
 
