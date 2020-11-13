@@ -74,19 +74,31 @@ public class MainActivity extends AppCompatActivity {
         // when a button is clicked
         Button clickedButton = buttonClicked(view, buttons);
         // if the button was clicked and the text is blank
-        // mark with an X or O and swap players
-        if (clickedButton != null && clickedButton.getText().equals("")){
+        // mark with the current turn symbol
+        if (clickedButton != null && ( clickedButton.getText().equals("") )){
             buttonPlayed(clickedButton);
-            swapPlayers();
+            // check for a win or a tie, if no win is detected then swap players
+            if ( WinDetected(buttons)){
+                playerTurn.setText("Player " + currentTurn + " has won");
+                DisableButtons(buttons);
+            }
+            else if (TieDetected(buttons)) {
+                playerTurn.setText("It's a tie!");
+                DisableButtons(buttons);
+            }
+            else {
+                swapPlayers();
+            }
         }
+
     }
 
     // buttonClicked method
     // returns the button that was clicked (returns null if no button clicked)
     private Button buttonClicked(View v, Button[] buttons){
-        for (int i = 0; i < buttons.length; i++){
-            if ( v == buttons[i]){
-                return buttons[i];
+        for ( Button button : buttons ){
+            if ( v == button ){
+                return button;
             }
         }
         return null;
@@ -120,9 +132,102 @@ public class MainActivity extends AppCompatActivity {
             b.setText("");
         }
 
+        // enable the buttons
+        EnableButtons(buttons);
+
         // reset turn
         if(currentTurn == playerO){
             swapPlayers();
+        }
+
+        // reset player text
+        playerTurn.setText("Player " + currentTurn + "'s Turn");
+    }
+
+    // the board has 9 buttons and a player needs three marks in a row, a column, or diagonally
+
+    // returns true if a win is detected for the current player
+    private boolean WinDetected (Button[] buttons){
+        //diagonal win
+       // all boxes 1, 5, and 9 OR boxes 7, 5, and 3 need to be marked with the same symbol
+       if ( TopLeftBtn.getText().equals(currentTurn) && // box 1
+            MiddleCenterBtn.getText().equals(currentTurn) && // box 5
+            BottomRightBtn.getText().equals(currentTurn)){ // box 9
+           return true;
+       }
+       if ( BottomLeftBtn.getText().equals(currentTurn) && //box 7
+            MiddleCenterBtn.getText().equals(currentTurn) && // box 5
+            TopRightBtn.getText().equals(currentTurn)){ // box 3
+           return true;
+       }
+
+       // row win
+        // top row is boxes 1, 2, 3
+        if ( TopLeftBtn.getText().equals(currentTurn) &&
+             TopCenterBtn.getText().equals(currentTurn) &&
+             TopRightBtn.getText().equals(currentTurn) ){
+            return true;
+        }
+        // middle row is boxes 4, 5, 6
+        else if ( MiddleLeftBtn.getText().equals(currentTurn) &&
+                  MiddleCenterBtn.getText().equals(currentTurn) &&
+                  MiddleRightBtn.getText().equals(currentTurn)){
+            return true;
+        }
+        // bottom row is boxes 7, 8, 0
+        else if ( BottomLeftBtn.getText().equals(currentTurn) &&
+                  BottomCenterBtn.getText().equals(currentTurn) &&
+                  BottomRightBtn.getText().equals(currentTurn)){
+            return true;
+        }
+
+        // column win
+        //left col is boxes 1, 4, 7
+        if ( TopLeftBtn.getText().equals(currentTurn) &&
+             MiddleLeftBtn.getText().equals(currentTurn) &&
+             BottomLeftBtn.getText().equals(currentTurn)){
+            return true;
+        }
+        //center col is boxes 2, 5, 8
+        else if ( TopCenterBtn.getText().equals(currentTurn) &&
+                  MiddleCenterBtn.getText().equals(currentTurn) &&
+                  BottomCenterBtn.getText().equals(currentTurn)){
+            return true;
+        }
+        //right col is boxes 3, 6, 9
+        else if ( TopRightBtn.getText().equals(currentTurn) &&
+                  MiddleRightBtn.getText().equals(currentTurn) &&
+                  BottomRightBtn.getText().equals(currentTurn)){
+            return true;
+        }
+
+        // no win detected
+        return false;
+    }
+
+
+    // return true if a tie is detected (no more boxes to play)
+    private boolean TieDetected (Button[] buttons){
+        // a tie is when all boxes are filled and neither players got three boxes in a row
+        for (Button b: buttons){
+            if (b.getText()==""){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // no buttons can be played until a new game is started
+    private void DisableButtons (Button[] buttons){
+        for (Button b: buttons){
+            b.setClickable(false);
+        }
+    }
+
+    // buttons can be played
+    private void EnableButtons(Button[] buttons){
+        for( Button b: buttons){
+            b.setClickable(true);
         }
     }
 }
